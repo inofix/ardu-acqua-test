@@ -7,6 +7,8 @@
 
 // wait a second (or so..)
 int timeout = 5000;
+// blink frequency
+int blink = 250;
 
 // install Photoresistor on
 int lightPin = A0;
@@ -91,7 +93,7 @@ void loop() {
         redValue = 255;
     }
 
-    // All the serial output
+    // serial user feedback
     Serial.print("Light Value:");
     Serial.print(lightValue);
     Serial.println(";");
@@ -112,7 +114,20 @@ void loop() {
     analogWrite(greenPin, greenValue);
     analogWrite(bluePin, blueValue);
 
-    // sleep a little
-    delay(timeout);
+    int ledLoop = timeout;
+
+    // set the actors
+    while (ledLoop > 0) {
+
+        analogWrite(redPin, redValue);
+        analogWrite(greenPin, greenValue);
+        analogWrite(bluePin, blueValue);
+        delay(blink);
+        analogWrite(redPin, 0);
+        analogWrite(greenPin, 0);
+        analogWrite(bluePin, 0);
+        delay(blink);
+        ledLoop -= blink;
+    }
 }
 
