@@ -2,6 +2,9 @@
 #include <DallasTemperature.h>
 #include <DHT.h>
 
+
+//// config ////
+
 // wait a second (or so..)
 int timeout = 5000;
 
@@ -12,6 +15,14 @@ int exactTempPin = 7;
 
 // install Digital Humidity/Temperature sensor on
 int dhtPin = 6;
+
+// RGB warn led
+int redPin = 8;
+int greenPin = 9;
+int bluePin = 10;
+
+
+//// init ////
 
 // initialize the sensor variables
 int lightValue = 0;
@@ -31,6 +42,14 @@ DallasTemperature sensor(&oneWire);
 // DHT
 DHT dht(dhtPin, DHT11);
 
+// PWM value for the colors
+int redValue = 0;
+int greenValue = 0;
+int blueValue = 0;
+
+
+//// functions ////
+
 void setup() {
     // Get a serial connection for reporting
     Serial.begin(9600);
@@ -40,6 +59,11 @@ void setup() {
 
     // initialize the DHT
     dht.begin();
+
+    // initialize the RGB warn led
+    pinMode(redPin,OUTPUT);
+    pinMode(greenPin,OUTPUT);
+    pinMode(bluePin,OUTPUT);
 }
 
 void loop() {
@@ -59,6 +83,14 @@ void loop() {
         heatIndex = dht.computeHeatIndex(envTempValue, envHumidityValue, false);
     }
 
+    redValue = 0;
+    greenValue = 0;
+    blueValue = 0;
+
+    if (exactTempValue > 30) {
+        redValue = 255;
+    }
+
     // All the serial output
     Serial.print("Light Value:");
     Serial.print(lightValue);
@@ -75,6 +107,10 @@ void loop() {
     Serial.print("C; Heat Index: ");
     Serial.print(heatIndex);
     Serial.println(";");
+
+    analogWrite(redPin, redValue);
+    analogWrite(greenPin, greenValue);
+    analogWrite(bluePin, blueValue);
 
     // sleep a little
     delay(timeout);
