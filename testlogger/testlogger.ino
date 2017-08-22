@@ -6,9 +6,9 @@
 //// config ////
 
 // wait a second (or so..)
-int timeout = 5000;
+int timeout = 2000;
 // blink frequency
-int blink = 250;
+int blink = 500;
 
 // install Photoresistor on
 int lightPin = A0;
@@ -23,6 +23,8 @@ int redPin = 8;
 int greenPin = 9;
 int bluePin = 10;
 
+// 2-color led for brightness
+int yellowPin = 11;
 
 //// init ////
 
@@ -49,6 +51,8 @@ int redValue = 0;
 int greenValue = 0;
 int blueValue = 0;
 
+// brightness
+int yellowValue = 0;
 
 //// functions ////
 
@@ -62,15 +66,19 @@ void setup() {
     // initialize the DHT
     dht.begin();
 
-    // initialize the RGB warn led
+    // initialize the RGB warn LED
     pinMode(redPin,OUTPUT);
     pinMode(greenPin,OUTPUT);
     pinMode(bluePin,OUTPUT);
+
+    // initialize 2-color LED, only yellow
+    pinMode(yellowPin,OUTPUT);
 }
 
 void loop() {
     // measure daylight
     lightValue = analogRead(lightPin);
+    yellowValue = 1023 - lightValue;
 
     // measure temp.
     sensor.requestTemperatures();
@@ -115,6 +123,8 @@ void loop() {
     analogWrite(bluePin, blueValue);
 
     int ledLoop = timeout;
+
+    analogWrite(yellowPin, yellowValue);
 
     // set the actors
     while (ledLoop > 0) {
