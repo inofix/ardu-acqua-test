@@ -2,7 +2,6 @@
 #include <DallasTemperature.h>
 #include <DHT.h>
 
-
 //// config ////
 
 // wait a second (or so..)
@@ -19,12 +18,14 @@ int exactTempPin = 7;
 int dhtPin = 6;
 
 // RGB warn led
-int redPin = 8;
-int greenPin = 9;
-int bluePin = 10;
+int redWarnPin = 8;
+int greenWarnPin = 9;
+int blueWarnPin = 10;
 
-// 2-color led for brightness
-int yellowPin = 11;
+// RGB led for brightness
+int redBrightnessPin = 0;
+int greenBrightnessPin = 1;
+int blueBrightnessPin = 2;
 
 //// init ////
 
@@ -52,7 +53,7 @@ int greenValue = 0;
 int blueValue = 0;
 
 // brightness
-int yellowValue = 0;
+int whiteValue = 0;
 
 //// functions ////
 
@@ -67,18 +68,19 @@ void setup() {
     dht.begin();
 
     // initialize the RGB warn LED
-    pinMode(redPin,OUTPUT);
-    pinMode(greenPin,OUTPUT);
-    pinMode(bluePin,OUTPUT);
+    pinMode(redWarnPin,OUTPUT);
+    pinMode(greenWarnPin,OUTPUT);
+    pinMode(blueWarnPin,OUTPUT);
 
-    // initialize 2-color LED, only yellow
-    pinMode(yellowPin,OUTPUT);
+    // initialize the second RGB LED, only white
+    pinMode(redBrightnessPin,OUTPUT);
+    pinMode(greenBrightnessPin,OUTPUT);
+    pinMode(blueBrightnessPin,OUTPUT);
 }
 
 void loop() {
     // measure daylight
     lightValue = analogRead(lightPin);
-    yellowValue = 1023 - lightValue;
 
     // measure temp.
     sensor.requestTemperatures();
@@ -118,24 +120,36 @@ void loop() {
     Serial.print(heatIndex);
     Serial.println(";");
 
-    analogWrite(redPin, redValue);
-    analogWrite(greenPin, greenValue);
-    analogWrite(bluePin, blueValue);
+    analogWrite(redWarnPin, redValue);
+    analogWrite(greenWarnPin, greenValue);
+    analogWrite(blueWarnPin, blueValue);
 
     int ledLoop = timeout;
 
-    analogWrite(yellowPin, yellowValue);
+    if (lightValue < 100) {
+        whiteValue = 0;
+    } else if (lightValue < 500) {
+        whiteValue = 256;
+    } else if (lightValue < 1000) {
+        whiteValue = 768;
+    } else {
+        whiteValue = 1023;
+    }
+
+    analogWrite(redBrightnessPin, whiteValue);
+    analogWrite(greenBrightnessPin, whiteValue);
+    analogWrite(blueBrightnessPin, whiteValue);
 
     // set the actors
     while (ledLoop > 0) {
 
-        analogWrite(redPin, redValue);
-        analogWrite(greenPin, greenValue);
-        analogWrite(bluePin, blueValue);
+        analogWrite(redWarnPin, redValue);
+        analogWrite(greenWarnPin, greenValue);
+        analogWrite(blueWarnPin, blueValue);
         delay(blink);
-        analogWrite(redPin, 0);
-        analogWrite(greenPin, 0);
-        analogWrite(bluePin, 0);
+        analogWrite(redWarnPin, 0);
+        analogWrite(greenWarnPin, 0);
+        analogWrite(blueWarnPin, 0);
         delay(blink);
         ledLoop -= blink;
     }
