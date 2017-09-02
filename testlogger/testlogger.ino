@@ -59,20 +59,8 @@ int twilightValue = 800;
 int dayValue = 100;
 int sunValue = 0;
 
-
-//// init ////
-
-// initialize the sensor/actor variables
-int lightValue = 0;
-
 // 18B20
-float exactTempValue = 0;
 float warnTempThreshold = 30;
-
-// DHT
-float envTempValue = 0;
-float envHumidityValue = 0;
-float heatIndex = 0;
 
 // 18B20
 OneWire oneWire(exactTempPin);
@@ -142,7 +130,7 @@ void loop() {
     //// measurements ////
 
     // measure daylight
-    lightValue = analogRead(lightPin);
+    int lightValue = analogRead(lightPin);
 
     // measure water level
     waterLevelValue = analogRead(waterLevelPin);
@@ -159,11 +147,12 @@ void loop() {
 
     // measure temp.
     sensor.requestTemperatures();
-    exactTempValue = sensor.getTempCByIndex(0);
+    float exactTempValue = sensor.getTempCByIndex(0);
 
     // measure humidity and temp.
-    envTempValue = dht.readTemperature();
-    envHumidityValue = dht.readHumidity();
+    float envTempValue = dht.readTemperature();
+    float envHumidityValue = dht.readHumidity();
+    float heatIndex = 0;
     if (isnan(envHumidityValue) || isnan(envTempValue)) {
         Serial.println("Error reading environment data.");
     } else {
