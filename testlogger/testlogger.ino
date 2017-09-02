@@ -83,7 +83,8 @@ int whiteValue = 0;
 int waterLevelValue = 0;
 
 // water distance
-int waterDistanceValue = 0;
+long waterDistanceValue = 0;
+long waterDistanceDuration = 0;
 
 //// functions ////
 
@@ -117,6 +118,15 @@ void setup() {
 
 void loop() {
 
+    //// init ////
+
+    // reset Pins
+    digitalWrite(triggerPin,LOW);
+
+
+
+    //// measurements ////
+
     // measure daylight
     lightValue = analogRead(lightPin);
 
@@ -124,7 +134,14 @@ void loop() {
     waterLevelValue = analogRead(waterLevelPin);
 
     // measure water distance
-//    waterDistanceValue =
+    digitalWrite(triggerPin,HIGH);
+    delayMicroseconds(1);
+    digitalWrite(triggerPin,LOW);
+    waterDistanceDuration = pulseIn(echoPin,HIGH);
+    // half the way
+    waterDistanceValue = waterDistanceDuration / 2;
+    // almost centimeters ...
+    waterDistanceValue = waterDistanceValue / 34;
 
     // measure temp.
     sensor.requestTemperatures();
@@ -147,7 +164,7 @@ void loop() {
         redValue = 255;
     }
 
-    // serial user feedback
+    //// serial user feedback ////
     Serial.print("Light Value:");
     Serial.print(lightValue);
     Serial.println(";");
@@ -166,6 +183,10 @@ void loop() {
 
     Serial.print("Water Level: ");
     Serial.print(waterLevelValue);
+    Serial.println(";");
+
+    Serial.print("Water Distance: ");
+    Serial.print(waterDistanceValue);
     Serial.println(";");
 
     analogWrite(redWarnPin, redValue);
