@@ -27,6 +27,7 @@ int redBrightnessPin = 3;
 int greenBrightnessPin = 4;
 int blueBrightnessPin = 5;
 
+int thresholdTolerancePercent = 10;
 int nightThreshold = 1000;
 int nightValue = 1023;
 int duskThreshold = 900;
@@ -65,6 +66,7 @@ int greenValue = 0;
 int blueValue = 0;
 
 // brightness
+int lastLightValue = 0;
 int whiteValue = 0;
 
 //// functions ////
@@ -91,6 +93,7 @@ void setup() {
 }
 
 void loop() {
+
     // measure daylight
     lightValue = analogRead(lightPin);
 
@@ -138,16 +141,20 @@ void loop() {
 
     int ledLoop = timeout;
 
-    if (lightValue < sunThreshold) {
-        whiteValue = sunValue;
-    } else if (lightValue < dayThreshold) {
-        whiteValue = dayValue;
-    } else if (lightValue < twilightThreshold) {
-        whiteValue = twilightValue;
-    } else if (lightValue < duskThreshold) {
-        whiteValue = duskValue;
-    } else {
-        whiteValue = nightValue;
+    if (abs(lastLightValue - lightValue) >
+            lightValue / thresholdTolerancePercent) {
+        lastLightValue = lightValue;
+        if (lightValue < sunThreshold) {
+            whiteValue = sunValue;
+        } else if (lightValue < dayThreshold) {
+            whiteValue = dayValue;
+        } else if (lightValue < twilightThreshold) {
+            whiteValue = twilightValue;
+        } else if (lightValue < duskThreshold) {
+            whiteValue = duskValue;
+        } else {
+            whiteValue = nightValue;
+        }
     }
 
     analogWrite(redBrightnessPin, whiteValue);
