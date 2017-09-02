@@ -23,9 +23,20 @@ int greenWarnPin = 9;
 int blueWarnPin = 10;
 
 // RGB led for brightness
-int redBrightnessPin = 0;
-int greenBrightnessPin = 1;
-int blueBrightnessPin = 2;
+int redBrightnessPin = 3;
+int greenBrightnessPin = 4;
+int blueBrightnessPin = 5;
+
+int nightThreshold = 1000;
+int nightValue = 1023;
+int duskThreshold = 900;
+int duskValue = 800;
+int twilightThreshold = 500;
+int twilightValue = 600;
+int dayThreshold = 200;
+int dayValue = 100;
+int sunThreshold = 80;
+int sunValue = 0;
 
 //// init ////
 
@@ -34,6 +45,7 @@ int lightValue = 0;
 
 // 18B20
 float exactTempValue = 0;
+float warnTempThreshold = 30;
 
 // DHT
 float envTempValue = 0;
@@ -99,7 +111,7 @@ void loop() {
     greenValue = 0;
     blueValue = 0;
 
-    if (exactTempValue > 30) {
+    if (exactTempValue > warnTempThreshold) {
         redValue = 255;
     }
 
@@ -126,14 +138,16 @@ void loop() {
 
     int ledLoop = timeout;
 
-    if (lightValue < 100) {
-        whiteValue = 0;
-    } else if (lightValue < 500) {
-        whiteValue = 256;
-    } else if (lightValue < 1000) {
-        whiteValue = 768;
+    if (lightValue < sunThreshold) {
+        whiteValue = sunValue;
+    } else if (lightValue < dayThreshold) {
+        whiteValue = dayValue;
+    } else if (lightValue < twilightThreshold) {
+        whiteValue = twilightValue;
+    } else if (lightValue < duskThreshold) {
+        whiteValue = duskValue;
     } else {
-        whiteValue = 1023;
+        whiteValue = nightValue;
     }
 
     analogWrite(redBrightnessPin, whiteValue);
