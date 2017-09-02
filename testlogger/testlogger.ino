@@ -4,50 +4,61 @@
 
 //// config ////
 
-// wait a second (or so..)
-int timeout = 2000;
-// blink frequency
-int blink = 500;
+/// set pins
 
-// install Photoresistor on
+// install Photoresistor on pin
 int lightPin = A0;
-// install the 18B20 Temperature sensor on
+
+// install the 18B20 Temperature sensor on pin
 int exactTempPin = 7;
 
-// install Digital Humidity/Temperature sensor on
+// install Digital Humidity/Temperature sensor on pin
 int dhtPin = 6;
 
-// RGB warn led
+// RGB warn led on pins
 int redWarnPin = 8;
 int greenWarnPin = 9;
 int blueWarnPin = 10;
 
-// RGB led for brightness
+// RGB led for brightness on pins
 int redBrightnessPin = 3;
 int greenBrightnessPin = 4;
 int blueBrightnessPin = 5;
 
-int thresholdTolerancePercent = 10;
-int nightThreshold = 1000;
-int nightValue = 1023;
-int duskThreshold = 900;
-int duskValue = 800;
-int twilightThreshold = 500;
-int twilightValue = 600;
-int dayThreshold = 200;
-int dayValue = 100;
-int sunThreshold = 80;
-int sunValue = 0;
-
-// Relay for the big water pump
+// Relay for the big water pump on pin
 int pumpPin = 46;
 
-// Simple water sensor
+// Simple water sensor on pin
 int waterLevelPin = A1;
 
-// Ultrasonic water distance sensor HC-SR04
+// Ultrasonic water distance sensor HC-SR04 on pins
 int triggerPin = 48;
 int echoPin = 49;
+
+/// control
+
+// wait a second (or so..)
+int timeout = 2000;
+
+// blink frequency
+int blink = 500;
+
+// RGB brightness thresholds
+int thresholdTolerancePercent = 10;
+int nightThreshold = 1000;
+int duskThreshold = 900;
+int twilightThreshold = 500;
+int dayThreshold = 200;
+int sunThreshold = 80;
+
+// RGB brightness values
+int nightValue = 1023;
+// TODO: why is 600 brighter than 800?
+int duskValue = 600;
+int twilightValue = 800;
+int dayValue = 100;
+int sunValue = 0;
+
 
 //// init ////
 
@@ -91,6 +102,9 @@ long waterDistanceDuration = 0;
 void setup() {
     // Get a serial connection for reporting
     Serial.begin(9600);
+
+    // initialize photoresistor
+    pinMode(lightPin,INPUT);
 
     // initialize the temp sensor
     sensor.begin();
