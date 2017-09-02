@@ -45,8 +45,9 @@ int pumpPin = 46;
 // Simple water sensor
 int waterLevelPin = A1;
 
-// Ultrasonic water distance sensor
-
+// Ultrasonic water distance sensor HC-SR04
+int triggerPin = 48;
+int echoPin = 49;
 
 //// init ////
 
@@ -82,6 +83,7 @@ int whiteValue = 0;
 int waterLevelValue = 0;
 
 // water distance
+int waterDistanceValue = 0;
 
 //// functions ////
 
@@ -107,6 +109,10 @@ void setup() {
 
     // initialize the pump
     pinMode(pumpPin,OUTPUT);
+
+    // initialize the HC-SR04
+    pinMode(triggerPin,OUTPUT);
+    pinMode(echoPin,INPUT);
 }
 
 void loop() {
@@ -116,6 +122,9 @@ void loop() {
 
     // measure water level
     waterLevelValue = analogRead(waterLevelPin);
+
+    // measure water distance
+//    waterDistanceValue =
 
     // measure temp.
     sensor.requestTemperatures();
