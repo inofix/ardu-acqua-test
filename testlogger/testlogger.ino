@@ -1,10 +1,14 @@
+
+//= includes =//
+
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <DHT.h>
 
-//// config ////
 
-/// set pins
+//= config =//
+
+//== set pins ==//
 
 // install Photoresistor on pin
 int lightPin = A0;
@@ -28,23 +32,22 @@ int blueBrightnessPin = 5;
 // Relay for the big water pump on pin
 int pumpPin = 46;
 
-// Simple water sensor on pin
+// Simple Iduino water sensor on pin
 int waterLevelPin = A1;
 
 // Ultrasonic water distance sensor HC-SR04 on pins
 int triggerPin = 48;
 int echoPin = 49;
 
-/// control
+
+//== control ==//
 
 // wait a second (or so..)
-int timeout = 2000;
-
-// blink frequency
-int blink = 500;
+int timeout = 1000;
 
 // RGB brightness thresholds
 int thresholdTolerancePercent = 10;
+
 int nightThreshold = 1000;
 int duskThreshold = 900;
 int twilightThreshold = 500;
@@ -62,6 +65,11 @@ int sunValue = 0;
 // 18B20
 float warnTempThreshold = 30;
 
+// Iduino water conductivity (tested tap and salty water..)
+int waterLevelThreshold = 600;
+
+//== init ==//
+
 // 18B20
 OneWire oneWire(exactTempPin);
 DallasTemperature sensor(&oneWire);
@@ -69,23 +77,13 @@ DallasTemperature sensor(&oneWire);
 // DHT
 DHT dht(dhtPin, DHT11);
 
-// PWM value for the colors
-int redValue = 0;
-int greenValue = 0;
-int blueValue = 0;
-
-// brightness
+// remember brightness
 int lastLightValue = 0;
-int whiteValue = 0;
 
-// water level
-int waterLevelValue = 0;
 
-// water distance
-long waterDistanceValue = 0;
-long waterDistanceDuration = 0;
+//= functions =//
 
-//// functions ////
+//== do once ==//
 
 void setup() {
     // Get a serial connection for reporting
@@ -113,37 +111,39 @@ void setup() {
     // initialize the pump
     pinMode(pumpPin,OUTPUT);
 
+    // initialize the water level pin
+    pinMode(waterLevelPin,INPUT);
+
     // initialize the HC-SR04
     pinMode(triggerPin,OUTPUT);
     pinMode(echoPin,INPUT);
 }
 
+
+//== main loop ==//
+
 void loop() {
 
-    //// init ////
+    //=== reset Pins ===//
 
-    // reset Pins
     digitalWrite(triggerPin,LOW);
 
 
-
-    //// measurements ////
+    //=== measurements ===//
 
     // measure daylight
     int lightValue = analogRead(lightPin);
 
     // measure water level
-    waterLevelValue = analogRead(waterLevelPin);
+    int waterLevelValue = analogRead(waterLevelPin);
 
     // measure water distance
     digitalWrite(triggerPin,HIGH);
     delayMicroseconds(1);
     digitalWrite(triggerPin,LOW);
-    waterDistanceDuration = pulseIn(echoPin,HIGH);
-    // half the way
-    waterDistanceValue = waterDistanceDuration / 2;
-    // almost centimeters ...
-    waterDistanceValue = waterDistanceValue / 34;
+    int waterDistanceDuration = pulseIn(echoPin,HIGH);
+    // calc half the way and in (almost) centimeters ..
+    int waterDistanceValue = waterDistanceDuration / 2 / 34;
 
     // measure temp.
     sensor.requestTemperatures();
@@ -159,15 +159,20 @@ void loop() {
         heatIndex = dht.computeHeatIndex(envTempValue, envHumidityValue, false);
     }
 
-    redValue = 0;
-    greenValue = 0;
-    blueValue = 0;
+    int redValue = 0;
+    int greenValue = 0;
+    int blueValue = 0;
 
     if (exactTempValue > warnTempThreshold) {
         redValue = 255;
     }
 
-    //// serial user feedback ////
+    if (waterLevelValue > waterLevelThreshold) {
+        blueValue = 255;
+    }
+
+    //=== serial user feedback ===//
+
     Serial.print("Light Value:");
     Serial.print(lightValue);
     Serial.println(";");
@@ -192,11 +197,14 @@ void loop() {
     Serial.print(waterDistanceValue);
     Serial.println(";");
 
+
+    //=== set the actors ===//
+
     analogWrite(redWarnPin, redValue);
     analogWrite(greenWarnPin, greenValue);
     analogWrite(blueWarnPin, blueValue);
 
-    int ledLoop = timeout;
+    int whiteValue;
 
     if (abs(lastLightValue - lightValue) >
             lightValue / thresholdTolerancePercent) {
@@ -218,18 +226,23 @@ void loop() {
     analogWrite(greenBrightnessPin, whiteValue);
     analogWrite(blueBrightnessPin, whiteValue);
 
-    // set the actors
-    while (ledLoop > 0) {
+    analogWrite(redWarnPin, redValue);
+    analogWrite(greenWarnPin, 0);
+    analogWrite(blueWarnPin, 0);
+    delay(timeout / 3);
 
-        analogWrite(redWarnPin, redValue);
-        analogWrite(greenWarnPin, greenValue);
-        analogWrite(blueWarnPin, blueValue);
-        delay(blink);
-        analogWrite(redWarnPin, 0);
-        analogWrite(greenWarnPin, 0);
-        analogWrite(blueWarnPin, 0);
-        delay(blink);
-        ledLoop -= blink;
-    }
+    analogWrite(redWarnPin, 0);
+    analogWrite(greenWarnPin, greenValue);
+    analogWrite(blueWarnPin, 0);
+    delay(timeout / 3);
+
+    analogWrite(redWarnPin, 0);
+    analogWrite(greenWarnPin, 0);
+    analogWrite(blueWarnPin, blueValue);
+    delay(timeout / 3);
+
+    analogWrite(redWarnPin, 0);
+    analogWrite(greenWarnPin, 0);
+    analogWrite(blueWarnPin, 0);
 }
 
