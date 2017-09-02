@@ -42,6 +42,12 @@ int sunValue = 0;
 // Relay for the big water pump
 int pumpPin = 46;
 
+// Simple water sensor
+int waterLevelPin = A1;
+
+// Ultrasonic water distance sensor
+
+
 //// init ////
 
 // initialize the sensor/actor variables
@@ -71,6 +77,11 @@ int blueValue = 0;
 // brightness
 int lastLightValue = 0;
 int whiteValue = 0;
+
+// water level
+int waterLevelValue = 0;
+
+// water distance
 
 //// functions ////
 
@@ -102,6 +113,9 @@ void loop() {
 
     // measure daylight
     lightValue = analogRead(lightPin);
+
+    // measure water level
+    waterLevelValue = analogRead(waterLevelPin);
 
     // measure temp.
     sensor.requestTemperatures();
@@ -139,6 +153,10 @@ void loop() {
     Serial.print(envTempValue);
     Serial.print("C; Heat Index: ");
     Serial.print(heatIndex);
+    Serial.println(";");
+
+    Serial.print("Water Level: ");
+    Serial.print(waterLevelValue);
     Serial.println(";");
 
     analogWrite(redWarnPin, redValue);
