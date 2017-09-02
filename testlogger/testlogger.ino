@@ -39,9 +39,12 @@ int dayValue = 100;
 int sunThreshold = 80;
 int sunValue = 0;
 
+// Relay for the big water pump
+int pumpPin = 46;
+
 //// init ////
 
-// initialize the sensor variables
+// initialize the sensor/actor variables
 int lightValue = 0;
 
 // 18B20
@@ -90,6 +93,9 @@ void setup() {
     pinMode(redBrightnessPin,OUTPUT);
     pinMode(greenBrightnessPin,OUTPUT);
     pinMode(blueBrightnessPin,OUTPUT);
+
+    // initialize the pump
+    pinMode(pumpPin,OUTPUT);
 }
 
 void loop() {
