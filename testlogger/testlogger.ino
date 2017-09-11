@@ -47,6 +47,8 @@ int timeout = 1000;
 
 // RGB brightness thresholds
 int thresholdTolerancePercent = 10;
+// reference value for threshold
+int analogMax = 1023;
 
 int nightThreshold = 1000;
 int duskThreshold = 900;
@@ -57,8 +59,8 @@ int sunThreshold = 80;
 // RGB brightness values
 int nightValue = 1023;
 // TODO: why is 600 brighter than 800?
-int duskValue = 600;
-int twilightValue = 800;
+int duskValue = 800;
+int twilightValue = 600;
 int dayValue = 100;
 int sunValue = 0;
 
@@ -79,7 +81,7 @@ DHT dht(dhtPin, DHT11);
 
 // remember brightness
 int lastLightValue = 0;
-
+int whiteValue = 0;
 
 //= functions =//
 
@@ -204,10 +206,8 @@ void loop() {
     analogWrite(greenWarnPin, greenValue);
     analogWrite(blueWarnPin, blueValue);
 
-    int whiteValue;
-
     if (abs(lastLightValue - lightValue) >
-            lightValue / thresholdTolerancePercent) {
+            analogMax / thresholdTolerancePercent) {
         lastLightValue = lightValue;
         if (lightValue < sunThreshold) {
             whiteValue = sunValue;
