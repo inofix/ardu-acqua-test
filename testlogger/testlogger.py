@@ -16,15 +16,14 @@ def serial_read(device, baudrate):
                 l = arduino_serial.readline()[:-2]
 
                 if (len(l) < 1):
-                    data = "[\n" + data + "\n]\n"
-                    print data
+                    data = "[" + data + "]"
                     j = json.loads(data)
                     print j
                     data = ""
                 elif (l[0] == "["):
                     if (len(data) > 0):
-                        data = data + ",\n"
-                    data = data + "    " + l
+                        data = data + ","
+                    data = data + " " + l
 
     except serial.serialutil.SerialException:
         print "Could not connect to the serial line at " + device
