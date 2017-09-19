@@ -18,10 +18,12 @@ def serial_read(device, baudrate):
                 if (len(l) < 1):
                     data = "[\n" + data + "\n]\n"
                     print data
+                    j = json.loads(data)
+                    print j
                     data = ""
                 elif (l[0] == "["):
                     if (len(data) > 0):
-                        data = data + ","
+                        data = data + ",\n"
                     data = data + "    " + l
 
     except serial.serialutil.SerialException:
