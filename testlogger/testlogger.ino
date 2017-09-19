@@ -127,9 +127,7 @@ void setup() {
 void loop() {
 
     //=== reset Pins ===//
-
     digitalWrite(triggerPin,LOW);
-
 
     //=== measurements ===//
 
@@ -166,7 +164,7 @@ void loop() {
     // in m
     float waterDistanceValue = waterDistanceDuration * soundVelocityAir / 1000000;
 
-    // initialize warn LED
+    // take action: initialize warn LED and Pump..
     int redValue = 0;
     int greenValue = 0;
     int blueValue = 0;
@@ -176,7 +174,10 @@ void loop() {
     }
 
     if (waterLevelValue > waterLevelThreshold) {
+        digitalWrite(pumpPin, HIGH);
         blueValue = 255;
+    } else {
+        digitalWrite(pumpPin, LOW);
     }
 
     //=== serial user feedback ===//
@@ -195,7 +196,9 @@ void loop() {
     Serial.print("Calculated Heat Index: ");
     Serial.println(heatIndex);
 
-    Serial.print("Water Contact: ");
+    Serial.print("Water Contact (Threshold is ");
+    Serial.print(waterLevelThreshold);
+    Serial.print("): ");
     Serial.println(waterLevelValue);
 
     Serial.print("Water Distance (m): ");
