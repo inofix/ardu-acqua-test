@@ -136,17 +136,6 @@ void loop() {
     // measure daylight
     int lightValue = analogRead(lightPin);
 
-    // measure water level
-    int waterLevelValue = analogRead(waterLevelPin);
-
-    // measure water distance
-    digitalWrite(triggerPin,HIGH);
-    delayMicroseconds(1);
-    digitalWrite(triggerPin,LOW);
-    int waterDistanceDuration = pulseIn(echoPin,HIGH);
-    // calc half the way and in (almost) centimeters ..
-    int waterDistanceValue = waterDistanceDuration / 2 / 34;
-
     // measure temp.
     sensor.requestTemperatures();
     float exactTempValue = sensor.getTempCByIndex(0);
@@ -161,6 +150,23 @@ void loop() {
         heatIndex = dht.computeHeatIndex(envTempValue, envHumidityValue, false);
     }
 
+    // measure water level
+    int waterLevelValue = analogRead(waterLevelPin);
+
+    // measure water distance
+    digitalWrite(triggerPin,LOW);
+    delayMicroseconds(100);
+    digitalWrite(triggerPin,HIGH);
+    delayMicroseconds(1);
+    digitalWrite(triggerPin,LOW);
+    // (half the way), in seconds
+    float waterDistanceDuration = pulseIn(echoPin,HIGH) / 2;
+    // (we should have two sensors, one just for calibration...)
+    float soundVelocityAir = 331.5 + 0.6 * envTempValue;
+    // in m
+    float waterDistanceValue = waterDistanceDuration * soundVelocityAir / 1000000;
+
+    // initialize warn LED
     int redValue = 0;
     int greenValue = 0;
     int blueValue = 0;
@@ -192,7 +198,7 @@ void loop() {
     Serial.print("Water Contact: ");
     Serial.println(waterLevelValue);
 
-    Serial.print("Water Distance (mm): ");
+    Serial.print("Water Distance (m): ");
     Serial.println(waterDistanceValue);
     Serial.println("========================================");
 
