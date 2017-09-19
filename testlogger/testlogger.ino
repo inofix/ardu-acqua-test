@@ -182,28 +182,36 @@ void loop() {
 
     //=== serial user feedback ===//
 
-    Serial.print("Light Value Index: ");
-    Serial.println(lightValue);
+    Serial.println("[");
+    Serial.print("[ {'name':'light_value'},{'value':'");
+    Serial.print(lightValue);
+    Serial.println("'} ],");
 
-    Serial.print("Box Temperature (°C): ");
-    Serial.println(exactTempValue);
+    Serial.print("[ {'name':'box_temperature'},{'unit':'°C'},{'value':'");
+    Serial.print(exactTempValue);
+    Serial.println("'} ],");
 
     // DHT
-    Serial.print("Environment Temperature (°C): ");
-    Serial.println(envTempValue);
-    Serial.print("Environment Humidity (%): ");
-    Serial.println(envHumidityValue);
-    Serial.print("Calculated Heat Index: ");
-    Serial.println(heatIndex);
+    Serial.print("[ {'name':'env_temperature'},{'unit':'°C'},{'value':'");
+    Serial.print(envTempValue);
+    Serial.println("'} ],");
+    Serial.print("[ {'name':'env_humidity'},{'unit':'%'},{'value':'");
+    Serial.print(envHumidityValue);
+    Serial.println("'} ],");
+    Serial.print("[ {'name':'env_heat_index'},{'value':'");
+    Serial.print(heatIndex);
+    Serial.println("'} ],");
 
-    Serial.print("Water Contact (Threshold is ");
+    Serial.print("[ {'name':'water_level'},{'threshold':'");
     Serial.print(waterLevelThreshold);
-    Serial.print("): ");
-    Serial.println(waterLevelValue);
+    Serial.print("'},'{value':'");
+    Serial.print(waterLevelValue);
+    Serial.println("'} ],");
 
-    Serial.print("Water Distance (m): ");
-    Serial.println(waterDistanceValue);
-    Serial.println("========================================");
+    Serial.print("[ {'name':'water_distance'},{'unit':'m'},{'value':'");
+    Serial.print(waterDistanceValue);
+    Serial.println("'} ]");
+    Serial.println("]");
 
     //=== set the actors ===//
 
