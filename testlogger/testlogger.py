@@ -10,19 +10,24 @@ def serial_read(device, baudrate):
     try:
         arduino_serial = serial.Serial(device, baudrate);
 
+        result = {}
         data = ""
+
         while (True):
             if (arduino_serial.inWaiting() > 1):
                 l = arduino_serial.readline()[:-2]
 
-                if (len(l) < 1):
-                    data = "[" + data + "]"
+                if (l == "["):
+                    # start recording
+                    data = "["
+                elif (l == "]") and (data[0] == "[") and (len(data) > 4):
+                    # now parse the input
+                    data = data + "]"
                     j = json.loads(data)
-                    print j
-                    data = ""
-                elif (l[0] == "["):
-                    if (len(data) > 0):
-                        data = data + ","
+                    for v in j:
+                        print v["name"]
+                elif (l[0:3] == "  {"):
+                    # this is a data line
                     data = data + " " + l
 
     except serial.serialutil.SerialException:
