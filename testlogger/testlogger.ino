@@ -175,30 +175,26 @@ void loop() {
 
     //=== serial user feedback ===//
 
-    Serial.print("Light Value:");
-    Serial.print(lightValue);
-    Serial.println(";");
+    Serial.print("Light Value Index: ");
+    Serial.println(lightValue);
 
-    Serial.print("Current exact Temperature: ");
-    Serial.print(exactTempValue);
-    Serial.println("C;");
+    Serial.print("Box Temperature (°C): ");
+    Serial.println(exactTempValue);
 
-    Serial.print("Humidity: ");
-    Serial.print(envHumidityValue);
-    Serial.print("%; Temperature: ");
-    Serial.print(envTempValue);
-    Serial.print("C; Heat Index: ");
-    Serial.print(heatIndex);
-    Serial.println(";");
+    // DHT
+    Serial.print("Environment Temperature (°C): ");
+    Serial.println(envTempValue);
+    Serial.print("Environment Humidity (%): ");
+    Serial.println(envHumidityValue);
+    Serial.print("Calculated Heat Index: ");
+    Serial.println(heatIndex);
 
-    Serial.print("Water Level: ");
-    Serial.print(waterLevelValue);
-    Serial.println(";");
+    Serial.print("Water Contact: ");
+    Serial.println(waterLevelValue);
 
-    Serial.print("Water Distance: ");
-    Serial.print(waterDistanceValue);
-    Serial.println(";");
-
+    Serial.print("Water Distance (mm): ");
+    Serial.println(waterDistanceValue);
+    Serial.println("========================================");
 
     //=== set the actors ===//
 
