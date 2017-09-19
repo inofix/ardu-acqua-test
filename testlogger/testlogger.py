@@ -14,7 +14,7 @@ def serial_read(device, baudrate):
                 data = arduino_serial.readline()
                 print data
 
-    except:
+    except serial.serialutil.SerialException:
         print "Could not connect to the serial line at " + device
 
 if __name__ == '__main__':
