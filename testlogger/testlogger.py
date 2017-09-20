@@ -51,6 +51,9 @@ class SerialReader(threading.Thread):
         except serial.serialutil.SerialException:
             print "Could not connect to the serial line at " + device
 
+    def halt(self):
+        self.do_run = False
+
 def user_mode(args):
 
     # just one thread for now..
@@ -70,7 +73,7 @@ def user_mode(args):
             threads[device_name].start()
         elif (mode == "stop"):
             if threads.has_key(device_name) and isinstance(threads[device_name], SerialReader):
-                threads[device_name].do_run = False
+                threads[device_name].halt()
         elif (mode == "exit" or mode == "quit"):
             return
         else:
@@ -82,6 +85,7 @@ if __name__ == '__main__':
     cli_parser.add_argument('-d', '--device', default='/dev/ttyACM1', help='serial device the arduino is connected to')
     cli_parser.add_argument('-b', '--baudrate', default=9600, help='baud rate of the serial line')
     cli_parser.add_argument('-i', '--interactive', default=False, help='prompt for control')
+    cli_parser.add_argument('-s', '--seconds', default=10, help='how long to run if not in interacitve mode')
     args = cli_parser.parse_args()
 
     if args.interactive:
@@ -89,6 +93,6 @@ if __name__ == '__main__':
     else:
         thread = SerialReader(args.device, args.baudrate)
         thread.start()
-        time.sleep(10)
-        thread.do_run = False
+        time.sleep(args.seconds)
+        thread.halt()
 
