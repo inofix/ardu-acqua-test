@@ -2,6 +2,8 @@
 
 import argparse
 import json
+import os
+import re
 import serial
 import sys
 import time
@@ -13,6 +15,7 @@ class SerialReader(threading.Thread):
         threading.Thread.__init__(self)
         self.device = device
         self.baudrate = baudrate
+        self.do_run = True
 
     def run(self):
         try:
@@ -20,7 +23,7 @@ class SerialReader(threading.Thread):
 
             data = ""
 
-            while (True):
+            while (self.do_run):
                 if (arduino_serial.inWaiting() > 1):
                     l = arduino_serial.readline()[:-2]
 
@@ -48,6 +51,31 @@ class SerialReader(threading.Thread):
         except serial.serialutil.SerialException:
             print "Could not connect to the serial line at " + device
 
+def user_mode(args):
+
+    # just one thread for now..
+
+    # one arduino is enough for the moment, but..
+    device_name = re.sub("/dev/", "", args.device);
+    threads = {}
+
+    while True:
+
+        sys.stdout.write(":-> ")
+        sys.stdout.flush()
+        mode = os.read(0,10)[:-1]
+
+        if (mode == "start"):
+            threads[device_name] = SerialReader(args.device, args.baudrate)
+            threads[device_name].start()
+        elif (mode == "stop"):
+            if threads.has_key(device_name) and isinstance(threads[device_name], SerialReader):
+                threads[device_name].do_run = False
+        elif (mode == "exit" or mode == "quit"):
+            return
+        else:
+            print "..." + mode + "..."
+
 if __name__ == '__main__':
 
     cli_parser = argparse.ArgumentParser(description="Parse data from the arduino and use it for the Flussbad-Demo.")
@@ -55,6 +83,5 @@ if __name__ == '__main__':
     cli_parser.add_argument('-b', '--baudrate', default=9600, help='baud rate of the serial line')
     args = cli_parser.parse_args()
 
-#    serial_read(args.device, args.baudrate)
-    thread = SerialReader(args.device, args.baudrate)
-    thread.start()
+    user_mode(args)
+
