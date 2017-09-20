@@ -13,6 +13,7 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
 """
 
 import argparse
+import datetime
 import json
 import os
 import re
@@ -40,8 +41,12 @@ class DataLogger(object):
         """
         j = json.loads(data)
 
+        # TODO: put the timestamp somewhere
+        timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
+
 ## TODO: debug start
         print ""
+        print timestamp
         for v in j:
             if v.has_key("unit"):
                 u = " " + v["unit"]
