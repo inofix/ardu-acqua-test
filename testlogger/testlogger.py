@@ -5,7 +5,6 @@ import json
 import serial
 import sys
 
-
 def serial_read(device, baudrate):
     try:
         arduino_serial = serial.Serial(device, baudrate);
@@ -20,7 +19,8 @@ def serial_read(device, baudrate):
                 if (l == "["):
                     # start recording
                     data = "["
-                elif (l == "]") and (data[0] == "[") and (len(data) > 4):
+                elif (l == "]") and (len(data) > 4) and (data[0] == "["):
+                    print data
                     # now parse the input
                     data = data + "]"
                     j = json.loads(data)
@@ -49,4 +49,3 @@ if __name__ == '__main__':
 
 
     serial_read(args.device, args.baudrate)
-
