@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+"""
+PURPOSE:      read the serial output of one or more arduino boards
+              and store the sensor values..
+AUTHOR(S):    michael lustenberger inofix.ch
+COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
+
+              This program is free software under the GNU General Public
+              License (>=v2).
+"""
+
 import argparse
 import json
 import os
@@ -10,11 +20,20 @@ import time
 import threading
 
 class DataLogger(object):
+    """
+    Logger class for parsing a data string and log the contents
+    """
 
     def __init__(self):
+        """
+        Initialize the data logger
+        """
         self.data = []
 
     def register_json(self, data):
+        """
+        Register the contents as JSON
+        """
         j = json.loads(data)
 
 ## TODO: debug start
@@ -28,8 +47,14 @@ class DataLogger(object):
 ## TODO: debug end
 
 class SerialReader(threading.Thread):
+    """
+    Reader class for connecting to an end device and reading its output
+    """
 
     def __init__(self, device, baudrate, logger):
+        """
+        Initialize the serial reader class
+        """
         threading.Thread.__init__(self)
         self.device = device
         self.baudrate = baudrate
@@ -37,6 +62,9 @@ class SerialReader(threading.Thread):
         self.do_run = True
 
     def run(self):
+        """
+        Open a connection over the serial line and receive data lines
+        """
         try:
             arduino_serial = serial.Serial(self.device, self.baudrate);
 
@@ -62,10 +90,15 @@ class SerialReader(threading.Thread):
             print "Could not connect to the serial line at " + device
 
     def halt(self):
+        """
+        Tell the logger to stop working after the next round
+        """
         self.do_run = False
 
 def user_mode(args):
-
+    """
+    Helper function to run in interactive mode
+    """
     logger = DataLogger()
 
     # just one thread for now..
@@ -92,8 +125,20 @@ def user_mode(args):
             print "This mode is not supported:" + mode
             print "Use one of 'start', 'stop', or 'exit' ..."
 
-if __name__ == '__main__':
+def standard_mode(args):
+    """
+    Helper function to run for a certain amount of time
+    """
+    logger = DataLogger()
+    thread = SerialReader(args.device, args.baudrate, logger)
+    thread.start()
+    time.sleep(args.seconds)
+    thread.halt()
 
+if __name__ == '__main__':
+    """
+    Main function used if started on the command line
+    """
     cli_parser = argparse.ArgumentParser(description="Parse data from the arduino and use it for the Flussbad-Demo.")
     cli_parser.add_argument('-d', '--device', default='/dev/ttyACM1', help='serial device the arduino is connected to')
     cli_parser.add_argument('-b', '--baudrate', default=9600, help='baud rate of the serial line')
@@ -104,9 +149,4 @@ if __name__ == '__main__':
     if args.interactive:
         user_mode(args)
     else:
-        logger = DataLogger()
-        thread = SerialReader(args.device, args.baudrate, logger)
-        thread.start()
-        time.sleep(args.seconds)
-        thread.halt()
-
+        standard_mode(args)
