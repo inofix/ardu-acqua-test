@@ -9,12 +9,31 @@ import sys
 import time
 import threading
 
+class DataLogger(object):
+
+    def __init__(self):
+        self.data = []
+
+    def register_json(self, data):
+        j = json.loads(data)
+
+## TODO: debug start
+        print ""
+        for v in j:
+            if v.has_key("unit"):
+                u = " " + v["unit"]
+            else:
+                u = ""
+            print v["name"] + " " + v["value"] + u
+## TODO: debug end
+
 class SerialReader(threading.Thread):
 
-    def __init__(self, device, baudrate):
+    def __init__(self, device, baudrate, logger):
         threading.Thread.__init__(self)
         self.device = device
         self.baudrate = baudrate
+        self.logger = logger
         self.do_run = True
 
     def run(self):
@@ -34,16 +53,7 @@ class SerialReader(threading.Thread):
                         print data
                         # now parse the input
                         data = data + "]"
-                        j = json.loads(data)
-## TODO: debug start
-                        print ""
-                        for v in j:
-                            if v.has_key("unit"):
-                                u = " " + v["unit"]
-                            else:
-                                u = ""
-                            print v["name"] + " " + v["value"] + u
-## TODO: debug end
+                        self.logger.register_json(data)
                     elif (l[0:3] == "  {"):
                         # this is a data line
                         data = data + " " + l
@@ -55,6 +65,8 @@ class SerialReader(threading.Thread):
         self.do_run = False
 
 def user_mode(args):
+
+    logger = DataLogger()
 
     # just one thread for now..
 
@@ -69,7 +81,7 @@ def user_mode(args):
         mode = os.read(0,10)[:-1]
 
         if (mode == "start"):
-            threads[device_name] = SerialReader(args.device, args.baudrate)
+            threads[device_name] = SerialReader(args.device, args.baudrate, logger)
             threads[device_name].start()
         elif (mode == "stop"):
             if threads.has_key(device_name) and isinstance(threads[device_name], SerialReader):
@@ -84,14 +96,15 @@ if __name__ == '__main__':
     cli_parser = argparse.ArgumentParser(description="Parse data from the arduino and use it for the Flussbad-Demo.")
     cli_parser.add_argument('-d', '--device', default='/dev/ttyACM1', help='serial device the arduino is connected to')
     cli_parser.add_argument('-b', '--baudrate', default=9600, help='baud rate of the serial line')
-    cli_parser.add_argument('-i', '--interactive', default=False, help='prompt for control')
-    cli_parser.add_argument('-s', '--seconds', default=10, help='how long to run if not in interacitve mode')
+    cli_parser.add_argument('-i', '--interactive', action="store_true", help='prompt for control')
+    cli_parser.add_argument('-s', '--seconds', type=int, default=10, help='how long to run if not in interacitve mode')
     args = cli_parser.parse_args()
 
     if args.interactive:
         user_mode(args)
     else:
-        thread = SerialReader(args.device, args.baudrate)
+        logger = DataLogger()
+        thread = SerialReader(args.device, args.baudrate, logger)
         thread.start()
         time.sleep(args.seconds)
         thread.halt()
