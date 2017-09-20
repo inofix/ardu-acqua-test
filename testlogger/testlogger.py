@@ -24,8 +24,15 @@ def serial_read(device, baudrate):
                     # now parse the input
                     data = data + "]"
                     j = json.loads(data)
+## TODO: debug start
+                    print ""
                     for v in j:
-                        print v["name"]
+                        if v.has_key("unit"):
+                            u = " " + v["unit"]
+                        else:
+                            u = ""
+                        print v["name"] + " " + v["value"] + u
+## TODO: debug end
                 elif (l[0:3] == "  {"):
                     # this is a data line
                     data = data + " " + l
