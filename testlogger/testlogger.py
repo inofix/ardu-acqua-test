@@ -3,6 +3,8 @@
 """
 PURPOSE:      read the serial output of one or more arduino boards
               and store the sensor values..
+DEPENDENCY:   python 2.7
+PLATTFORM:    currently only unix/linux is supported
 AUTHOR(S):    michael lustenberger inofix.ch
 COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
 
@@ -87,7 +89,7 @@ class SerialReader(threading.Thread):
                         data = data + " " + l
 
         except serial.serialutil.SerialException:
-            print "Could not connect to the serial line at " + device
+            print "Could not connect to the serial line at " + self.device
 
     def halt(self):
         """
@@ -101,28 +103,65 @@ def user_mode(args):
     """
     logger = DataLogger()
 
-    # just one thread for now..
-
-    # one arduino is enough for the moment, but..
-    device_name = re.sub("/dev/", "", args.device);
+    # hold a dict of serial connections
     threads = {}
+
+    print "Welcome to the interactive mode!"
+    print "You have the following options:"
+    print "    register [device] [baud]         add a device to observe"
+    print "    unregister [device]              remove a device"
+    print "    exit                             cleanup and quit"
 
     while True:
 
+        # prompt for user input
         sys.stdout.write(":-> ")
         sys.stdout.flush()
-        mode = os.read(0,10)[:-1]
 
-        if (mode == "start"):
-            threads[device_name] = SerialReader(args.device, args.baudrate, logger)
-            threads[device_name].start()
-        elif (mode == "stop"):
+        # get user input
+        m = os.read(0,80)[:-1]
+
+        # prepare the modes
+        ms = m.split(" ")
+        mode = ms[0]
+
+        # standard values from the CLI
+        device = args.device
+        device_name = re.sub("/dev/", "", args.device)
+        baudrate = args.baudrate
+
+        # if the device is specified, set it
+        if len(ms) > 1:
+            if ms[1][0:1] == "/":
+                device = ms[1]
+                device_name = ms[1].sub("/dev/", "", args.device)
+            else:
+                device = "/dev/" + ms[1]
+                device_name = ms[1]
+
+        # if device and baudrate are specified, also set the baudrate
+        if len(ms) > 2:
+            baudrate = ms[2]
+
+        # now do what the user wants
+        if (mode == "register"):
+            if threads.has_key(device_name):
+                print "This device was already registered"
+            else:
+                threads[device_name] = SerialReader(device, baudrate, logger)
+                threads[device_name].start()
+        elif (mode == "unregister"):
             if threads.has_key(device_name) and isinstance(threads[device_name], SerialReader):
                 threads[device_name].halt()
+                threads.pop(device_name)
         elif (mode == "exit" or mode == "quit"):
+            i = iter(threads)
+            for k in i:
+                t = threads[k]
+                t.halt()
             return
         else:
-            print "This mode is not supported:" + mode
+            print "This mode is not supported: " + mode
             print "Use one of 'start', 'stop', or 'exit' ..."
 
 def standard_mode(args):
@@ -130,6 +169,7 @@ def standard_mode(args):
     Helper function to run for a certain amount of time
     """
     logger = DataLogger()
+
     thread = SerialReader(args.device, args.baudrate, logger)
     thread.start()
     time.sleep(args.seconds)
