@@ -148,17 +148,22 @@ def user_mode(args):
             if threads.has_key(device_name):
                 print "This device was already registered"
             else:
+                # create an object that connects to the serial line
                 threads[device_name] = SerialReader(device, baudrate, logger)
+                # start recording
                 threads[device_name].start()
         elif (mode == "unregister"):
             if threads.has_key(device_name) and isinstance(threads[device_name], SerialReader):
+                # end the recording and remove the device from the list
                 threads[device_name].halt()
                 threads.pop(device_name)
         elif (mode == "exit" or mode == "quit"):
+            # clean up
             i = iter(threads)
             for k in i:
                 t = threads[k]
                 t.halt()
+            # and exit
             return
         else:
             print "This mode is not supported: " + mode
