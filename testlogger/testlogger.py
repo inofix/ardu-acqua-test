@@ -85,7 +85,6 @@ class SerialReader(threading.Thread):
                         # start recording
                         data = "["
                     elif (l == "]") and (len(data) > 4) and (data[0] == "["):
-                        print data
                         # now parse the input
                         data = data + "]"
                         self.logger.register_json(data)
