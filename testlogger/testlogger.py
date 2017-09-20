@@ -26,11 +26,13 @@ class DataLogger(object):
     Logger class for parsing a data string and log the contents
     """
 
-    def __init__(self):
+    def __init__(self, url):
         """
         Initialize the data logger
+            url url      URL to send the data to
         """
         self.data = []
+        self.url = url
 
     def register_json(self, data):
         """
@@ -109,7 +111,7 @@ def user_mode(args):
     """
     Helper function to run in interactive mode
     """
-    logger = DataLogger()
+    logger = DataLogger("")
 
     # hold a dict of serial connections
     threads = {}
@@ -189,7 +191,7 @@ def standard_mode(args):
     """
     Helper function to run for a certain amount of time
     """
-    logger = DataLogger()
+    logger = DataLogger("")
 
     thread = SerialReader(args.device, args.baudrate, logger, args.rounds)
     thread.start()
