@@ -89,7 +89,8 @@ def user_mode(args):
         elif (mode == "exit" or mode == "quit"):
             return
         else:
-            print "..." + mode + "..."
+            print "This mode is not supported:" + mode
+            print "Use one of 'start', 'stop', or 'exit' ..."
 
 if __name__ == '__main__':
 
