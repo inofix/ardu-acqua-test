@@ -7,7 +7,7 @@ import sys
 import time
 import threading
 
-class serial_read(threading.Thread):
+class SerialReader(threading.Thread):
 
     def __init__(self, device, baudrate):
         threading.Thread.__init__(self)
@@ -56,5 +56,5 @@ if __name__ == '__main__':
     args = cli_parser.parse_args()
 
 #    serial_read(args.device, args.baudrate)
-    thread = serial_read(args.device, args.baudrate)
+    thread = SerialReader(args.device, args.baudrate)
     thread.start()
