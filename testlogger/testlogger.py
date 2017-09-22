@@ -34,6 +34,9 @@ class DataLogger(object):
         """
         self.data = []
         self.url = url
+        # prepare a dict to store the data
+        # this way we can wait for a stable set of values
+        self.data = {}
 
     def register_json(self, data):
         """
@@ -43,7 +46,6 @@ class DataLogger(object):
 
         # TODO: put the timestamp somewhere
         timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
-
 ## TODO: debug start
         print ""
         print timestamp
@@ -54,6 +56,30 @@ class DataLogger(object):
                 u = ""
             print v["name"] + " " + v["value"] + u
 ## TODO: debug end
+
+    def log_stdout(self):
+        """
+        Write to standard output
+        """
+        pass
+
+    def log_file(self):
+        """
+        Write to a local log file
+        """
+        pass
+
+    def log_post(self):
+        """
+        Write to a remote host via HTTP POST
+        """
+        pass
+
+    def log_ssh(self):
+        """
+        Write to a remote file via ssh
+        """
+        pass
 
 class SerialReader(threading.Thread):
     """
