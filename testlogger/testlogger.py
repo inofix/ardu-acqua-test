@@ -63,7 +63,7 @@ class DataLogger(object):
         """
         Write to standard output
         """
-        print "==== " + self.last_data_timestamp + "===="
+        print "==== " + self.last_data_timestamp + " ===="
 
     def log_file(self):
         """
