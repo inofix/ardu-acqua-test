@@ -214,6 +214,11 @@ def user_mode(args):
                     # end the recording and remove the device from the list
                     threads[device_name].halt()
                     threads.pop(device_name)
+            elif (mode == "report"):
+                if logger.last_data_timestamp:
+                    logger.log_stdout()
+                else:
+                    print "No data has been collected so far, please try again later.."
             else:
                 print "This mode is not supported: " + mode
                 print "Use one of 'start', 'stop', or 'exit' ..."
