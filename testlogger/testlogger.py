@@ -49,7 +49,6 @@ class DataLogger(object):
         for v in j:
             self.data[v["name"]] = v
 
-        # TODO: put the timestamp somewhere
         self.last_data_timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 
     def log_stdout(self):
