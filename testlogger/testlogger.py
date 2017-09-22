@@ -37,6 +37,8 @@ class DataLogger(object):
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
+        # remember the time of the last data update
+        self.last_data_timestamp = None
 
     def register_json(self, data):
         """
@@ -45,10 +47,10 @@ class DataLogger(object):
         j = json.loads(data)
 
         # TODO: put the timestamp somewhere
-        timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
+        self.last_data_timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 ## TODO: debug start
         print ""
-        print timestamp
+        print self.last_data_timestamp
         for v in j:
             if v.has_key("unit"):
                 u = " " + v["unit"]
@@ -61,7 +63,7 @@ class DataLogger(object):
         """
         Write to standard output
         """
-        pass
+        print "==== " + self.last_data_timestamp + "===="
 
     def log_file(self):
         """
