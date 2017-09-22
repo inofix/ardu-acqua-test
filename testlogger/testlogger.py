@@ -46,24 +46,23 @@ class DataLogger(object):
         """
         j = json.loads(data)
 
+        for v in j:
+            self.data[v["name"]] = v
+
         # TODO: put the timestamp somewhere
         self.last_data_timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
-## TODO: debug start
-        print ""
-        print self.last_data_timestamp
-        for v in j:
-            if v.has_key("unit"):
-                u = " " + v["unit"]
-            else:
-                u = ""
-            print v["name"] + " " + v["value"] + u
-## TODO: debug end
 
     def log_stdout(self):
         """
         Write to standard output
         """
         print "==== " + self.last_data_timestamp + " ===="
+        for k in self.data:
+            if self.data[k].has_key("unit"):
+                u = " " + self.data[k]["unit"]
+            else:
+                u = ""
+            print k + " " + self.data[k]["value"] + u
 
     def log_file(self):
         """
@@ -230,6 +229,7 @@ def standard_mode(args):
     thread.start()
     time.sleep(args.seconds)
     thread.halt()
+    logger.log_stdout()
 
 if __name__ == '__main__':
     """
