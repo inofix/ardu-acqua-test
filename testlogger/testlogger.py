@@ -80,7 +80,13 @@ class DataLogger(object):
         """
         Write to a local log file
         """
-        pass
+        f = re.sub("file://", "", self.url)
+        try:
+            with open(f, "w") as of:
+                of.write(str(self.data))
+        except IOError as e:
+            print e
+            print "Could not write the content to the file.."
 
     def log_post(self):
         """
