@@ -159,7 +159,7 @@ def user_mode(args):
     """
     Helper function to run in interactive mode
     """
-    logger = DataLogger("")
+    logger = DataLogger()
 
     # hold a dict of serial connections
     threads = {}
@@ -289,7 +289,7 @@ def standard_mode(args):
     """
     credentials = get_credentials(args)
 
-    logger = DataLogger(args.target)
+    logger = DataLogger(args.target, credentials, args.insecure)
 
     reader = SerialReader(args.device, args.baudrate, logger, args.rounds)
     reader.start()
@@ -305,7 +305,7 @@ if __name__ == '__main__':
     cli_parser.add_argument('-b', '--baudrate', default=9600, help='baud rate of the serial line')
     cli_parser.add_argument('-d', '--device', default='/dev/ttyACM0', help='serial device the arduino is connected to')
     cli_parser.add_argument('-i', '--interactive', action="store_true", help='prompt for control and log to stdout')
-    cli_parser.add_argument('-I', '--insecure', action="store_true", help='do not verify certificate on HTTPS POST')
+    cli_parser.add_argument('-I', '--insecure', default=False, action="store_true", help='do not verify certificate on HTTPS POST')
     cli_parser.add_argument('-p', '--password', action="store_true", help='prompt for a password')
     cli_parser.add_argument('-P', '--password_file', default='', help='load password from this file, containing the line: \'password: "my secret text"\'')
     cli_parser.add_argument('-r', '--rounds', type=int, default=0, help='how many times to run the serial listener thread (default: 0 / infinite)')
