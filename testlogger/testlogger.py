@@ -16,6 +16,7 @@ from base64 import b64encode
 import argparse
 import datetime
 import getpass
+import httplib
 import json
 import os
 import re
