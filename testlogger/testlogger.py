@@ -244,10 +244,10 @@ def standard_mode(args):
     """
     logger = DataLogger("")
 
-    thread = SerialReader(args.device, args.baudrate, logger, args.rounds)
-    thread.start()
+    reader = SerialReader(args.device, args.baudrate, logger, args.rounds)
+    reader.start()
     time.sleep(args.seconds)
-    thread.halt()
+    reader.halt()
     logger.log()
 
 if __name__ == '__main__':
