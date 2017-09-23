@@ -17,10 +17,12 @@ import datetime
 import json
 import os
 import re
+import requests
 import serial
 import sys
 import time
 import threading
+import urllib2
 
 class DataLogger(object):
     """
@@ -45,6 +47,9 @@ class DataLogger(object):
             self.log = self.log_post
         else:
             self.log = self.log_stdout
+        self.do_verify_certificate = True
+        self.username = ""
+        self.password = ""
 
     def register_json(self, data):
         """
@@ -79,7 +84,11 @@ class DataLogger(object):
         """
         Write to a remote host via HTTP POST
         """
-        pass
+        headers = {"Content-Type": "application/json"}
+        try:
+            request = requests.post(self.url, headers=headers, data=self.data, verify=self.do_verify_cerificate)
+        except httplib.IncompleteRead as e:
+            request = e.partial
 
     def log_ssh(self):
         """
@@ -246,11 +255,12 @@ if __name__ == '__main__':
     Main function used if started on the command line
     """
     cli_parser = argparse.ArgumentParser(description="Parse data from the arduino and use it for the Flussbad-Demo.")
-    cli_parser.add_argument('-d', '--device', default='/dev/ttyACM0', help='serial device the arduino is connected to')
     cli_parser.add_argument('-b', '--baudrate', default=9600, help='baud rate of the serial line')
+    cli_parser.add_argument('-d', '--device', default='/dev/ttyACM0', help='serial device the arduino is connected to')
     cli_parser.add_argument('-i', '--interactive', action="store_true", help='prompt for control')
-    cli_parser.add_argument('-s', '--seconds', type=int, default=10, help='how long to run if not in interacitve mode')
+    cli_parser.add_argument('-I', '--insecure', action="store_true", help='do not verify certificate on HTTPS POST')
     cli_parser.add_argument('-r', '--rounds', type=int, default=0, help='how many times to run the serial listener thread (default: 0 / infinite)')
+    cli_parser.add_argument('-s', '--seconds', type=int, default=10, help='how long to run if not in interacitve mode')
     args = cli_parser.parse_args()
 
     if args.interactive:
