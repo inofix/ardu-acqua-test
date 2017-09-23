@@ -245,27 +245,36 @@ def get_credentials(args):
     """
     Helper function to get username and password
     """
+    # lets store all kind of credential data into this dict
     credentials = {}
+    # set the user from CLI or file
     if args.user:
         credentials["user"] = args.user
     elif args.user_file:
         with open(args.user_file, "r") as of:
+            # what would the file entry look like?
             pattern = re.compile("^user: ")
             for l in of:
-                l = l[0:-1]
                 if re.match(pattern, l):
+                    # strip away the newline
+                    l = l[0:-1]
                     credentials["user"] = re.sub(pattern, "", l)
+    # remove any surrounding quotes
     if credentials["user"][0:1] == '"' and credentials["user"][-1:] == '"':
         credentials["user"] = credentials["user"][1:-1]
+    # set the password from CLI or file
     if args.password:
         credentials["password"] = getpass.getpass()
     elif args.password_file:
         with open(args.password_file, "r") as of:
+            # what would the file entry look like?
             pattern = re.compile("^password: ")
             for l in of:
-                l = l[0:-1]
                 if re.match(pattern, l):
+                    # strip away the newline
+                    l = l[0:-1]
                     credentials["password"] = re.sub(pattern, "", l)
+    # remove any surrounding quotes
     if credentials["password"][0:1] == '"' and credentials["password"][-1:] == '"':
         credentials["password"] = credentials["password"][1:-1]
 
