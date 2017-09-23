@@ -259,9 +259,13 @@ if __name__ == '__main__':
     cli_parser.add_argument('-d', '--device', default='/dev/ttyACM0', help='serial device the arduino is connected to')
     cli_parser.add_argument('-i', '--interactive', action="store_true", help='prompt for control')
     cli_parser.add_argument('-I', '--insecure', action="store_true", help='do not verify certificate on HTTPS POST')
+    cli_parser.add_argument('-p', '--password', action="store_true", help='prompt for a password')
+    cli_parser.add_argument('-P', '--password-file', default='', help='load password from this file, containing the line: \'password: "my secret text"\'')
     cli_parser.add_argument('-r', '--rounds', type=int, default=0, help='how many times to run the serial listener thread (default: 0 / infinite)')
     cli_parser.add_argument('-s', '--seconds', type=int, default=10, help='how long to run if not in interacitve mode')
     args = cli_parser.parse_args()
+    cli_parser.add_argument('-u', '--user', default='', help='user name')
+    cli_parser.add_argument('-U', '--user-file', default='', help='load user name from this file, containing the line: \'user: "my_name"\'')
 
     if args.interactive:
         user_mode(args)
