@@ -12,8 +12,10 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
               License (>=v2).
 """
 
+from base64 import b64encode
 import argparse
 import datetime
+import getpass
 import json
 import os
 import re
@@ -252,7 +254,19 @@ def get_credentials(args):
             for l in of:
                 if re.match(pattern, l):
                     credentials["user"] = re.sub(pattern, "", l)
+    if args.password:
+        credentials["password"] = getpass.getpass()
+    elif args.password_file:
+        with open(args.password_file, "r") as of:
+            pattern = re.compile("^password: ")
+            for l in of:
+                if re.match(pattern, l):
+                    credentials["password"] = re.sub(pattern, "", l)
 
+    # if both user and password is set,
+    #  1. encode to base 64 for basic auth
+    if credentials["user"] and credentials["password"]:
+        credentials["base64"] = b64encode(credentials["user"] + ":" + credentials["password"]).decode("ascii")
 
 def standard_mode(args):
     """
