@@ -36,10 +36,6 @@ class DataLogger(object):
         Initialize the data logger
             url url      URL to send the data to
         """
-        if not credentials:
-            # set the dict not set from default
-            credentials = {}
-
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
@@ -96,7 +92,7 @@ class DataLogger(object):
         """
         Write to a remote host via HTTP POST
         """
-        if self.credentials.has_key("base64"):
+        if self.credentials and self.credentials.has_key("base64"):
             headers = {"Content-Type": "application/json", 'Authorization': 'Basic %s' % self.credentials["base64"]}
         else:
             headers = {"Content-Type": "application/json"}
