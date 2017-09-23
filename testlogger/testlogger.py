@@ -31,27 +31,27 @@ class DataLogger(object):
     Logger class for parsing a data string and log the contents
     """
 
-    def __init__(self, url):
+    def __init__(self, url="", credentials={}, do_verify_certificate=True):
         """
         Initialize the data logger
             url url      URL to send the data to
         """
-        self.data = []
-        self.url = url
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
         # remember the time of the last data update
         self.last_data_timestamp = None
+        # set the url and find out what method to apply
+        self.url = url
         if re.match("file://", url):
             self.log = self.log_file
         elif re.match("https://", url) or re.match("http://", url):
             self.log = self.log_post
+            # set the security options
+            self.credentials = credentials
+            self.do_verify_certificate = do_verify_certificate
         else:
             self.log = self.log_stdout
-        self.do_verify_certificate = True
-        self.username = ""
-        self.password = ""
 
     def register_json(self, data):
         """
