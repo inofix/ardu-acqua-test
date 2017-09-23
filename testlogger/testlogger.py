@@ -166,9 +166,10 @@ def user_mode(args):
 
     print "Welcome to the interactive mode!"
     print "You have the following options:"
+    print "    rounds num                       number of rounds to run threads"
     print "    register [device] [baud]         add a device to observe"
     print "    unregister [device]              remove a device"
-    print "    rounds num                       number of rounds to run threads"
+    print "    report                           write results to stdout"
     print "    exit                             cleanup and quit"
 
     # set the default number of rounds to run a thread from the CLI
