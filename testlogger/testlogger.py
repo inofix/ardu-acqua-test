@@ -238,6 +238,13 @@ def user_mode(args):
                 print "This mode is not supported: " + mode
                 print "Use one of 'start', 'stop', or 'exit' ..."
 
+
+def get_credentials(args):
+    """
+    Helper function to get username and password
+    """
+    pass
+
 def standard_mode(args):
     """
     Helper function to run for a certain amount of time
