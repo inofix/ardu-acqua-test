@@ -239,7 +239,8 @@ def user_mode(args):
                     print "No data has been collected so far, please try again later.."
             else:
                 print "This mode is not supported: " + mode
-                print "Use one of 'start', 'stop', or 'exit' ..."
+                print "Use one of 'rounds', 'register', 'unregister', "\
+                      "'report', or 'exit' ..."
 
 
 def get_credentials(args):
