@@ -36,6 +36,10 @@ class DataLogger(object):
         Initialize the data logger
             url url      URL to send the data to
         """
+        if not credentials:
+            # set the dict not set from default
+            credentials = {}
+
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
@@ -92,7 +96,10 @@ class DataLogger(object):
         """
         Write to a remote host via HTTP POST
         """
-        headers = {"Content-Type": "application/json"}
+        if self.credentials.has_key("base64"):
+            headers = {"Content-Type": "application/json", 'Authorization': 'Basic %s' % self.credentials["base64"]}
+        else:
+            headers = {"Content-Type": "application/json"}
         try:
             request = requests.post(self.url, headers=headers, data=self.data, verify=self.do_verify_cerificate)
         except httplib.IncompleteRead as e:
@@ -290,6 +297,7 @@ def get_credentials(args):
     #  1. encode to base 64 for basic auth
     if credentials["user"] and credentials["password"]:
         credentials["base64"] = b64encode(credentials["user"] + ":" + credentials["password"]).decode("ascii")
+    return credentials
 
 def standard_mode(args):
     """
