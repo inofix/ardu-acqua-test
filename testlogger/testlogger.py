@@ -252,16 +252,22 @@ def get_credentials(args):
         with open(args.user_file, "r") as of:
             pattern = re.compile("^user: ")
             for l in of:
+                l = l[0:-1]
                 if re.match(pattern, l):
                     credentials["user"] = re.sub(pattern, "", l)
+    if credentials["user"][0:1] == '"' and credentials["user"][-1:] == '"':
+        credentials["user"] = credentials["user"][1:-1]
     if args.password:
         credentials["password"] = getpass.getpass()
     elif args.password_file:
         with open(args.password_file, "r") as of:
             pattern = re.compile("^password: ")
             for l in of:
+                l = l[0:-1]
                 if re.match(pattern, l):
                     credentials["password"] = re.sub(pattern, "", l)
+    if credentials["password"][0:1] == '"' and credentials["password"][-1:] == '"':
+        credentials["password"] = credentials["password"][1:-1]
 
     # if both user and password is set,
     #  1. encode to base 64 for basic auth
