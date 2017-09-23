@@ -243,12 +243,23 @@ def get_credentials(args):
     """
     Helper function to get username and password
     """
-    pass
+    credentials = {}
+    if args.user:
+        credentials["user"] = args.user
+    elif args.user_file:
+        with open(args.user_file, "r") as of:
+            pattern = re.compile("^user: ")
+            for l in of:
+                if re.match(pattern, l):
+                    credentials["user"] = re.sub(pattern, "", l)
+
 
 def standard_mode(args):
     """
     Helper function to run for a certain amount of time
     """
+    credentials = get_credentials(args)
+
     logger = DataLogger(args.target)
 
     reader = SerialReader(args.device, args.baudrate, logger, args.rounds)
@@ -267,12 +278,12 @@ if __name__ == '__main__':
     cli_parser.add_argument('-i', '--interactive', action="store_true", help='prompt for control and log to stdout')
     cli_parser.add_argument('-I', '--insecure', action="store_true", help='do not verify certificate on HTTPS POST')
     cli_parser.add_argument('-p', '--password', action="store_true", help='prompt for a password')
-    cli_parser.add_argument('-P', '--password-file', default='', help='load password from this file, containing the line: \'password: "my secret text"\'')
+    cli_parser.add_argument('-P', '--password_file', default='', help='load password from this file, containing the line: \'password: "my secret text"\'')
     cli_parser.add_argument('-r', '--rounds', type=int, default=0, help='how many times to run the serial listener thread (default: 0 / infinite)')
     cli_parser.add_argument('-s', '--seconds', type=int, default=10, help='how long to run if not in interacitve mode')
     cli_parser.add_argument('-t', '--target', default="", help='target log, where to report the data to. Default is empty for <stdout>, the following URLs are provided yet: "file:///..", "http://..", "https://.."')
     cli_parser.add_argument('-u', '--user', default='', help='user name')
-    cli_parser.add_argument('-U', '--user-file', default='', help='load user name from this file, containing the line: \'user: "my_name"\'')
+    cli_parser.add_argument('-U', '--user_file', default='', help='load user name from this file, containing the line: \'user: "my_name"\'')
 
     args = cli_parser.parse_args()
 
