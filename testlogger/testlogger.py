@@ -39,6 +39,12 @@ class DataLogger(object):
         self.data = {}
         # remember the time of the last data update
         self.last_data_timestamp = None
+        if re.match("file://", url):
+            self.log = self.log_file
+        elif re.match("https://", url) or re.match("http://", url):
+            self.log = self.log_post
+        else:
+            self.log = self.log_stdout
 
     def register_json(self, data):
         """
@@ -216,7 +222,7 @@ def user_mode(args):
                     threads.pop(device_name)
             elif (mode == "report"):
                 if logger.last_data_timestamp:
-                    logger.log_stdout()
+                    logger.log()
                 else:
                     print "No data has been collected so far, please try again later.."
             else:
@@ -233,7 +239,7 @@ def standard_mode(args):
     thread.start()
     time.sleep(args.seconds)
     thread.halt()
-    logger.log_stdout()
+    logger.log()
 
 if __name__ == '__main__':
     """
