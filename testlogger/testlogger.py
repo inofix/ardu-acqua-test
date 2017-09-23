@@ -98,7 +98,7 @@ class DataLogger(object):
         else:
             headers = {"Content-Type": "application/json"}
         try:
-            request = requests.post(self.url, headers=headers, data=self.data, verify=self.do_verify_cerificate)
+            request = requests.post(self.url, headers=headers, data=self.data, verify=self.do_verify_certificate)
         except httplib.IncompleteRead as e:
             request = e.partial
 
