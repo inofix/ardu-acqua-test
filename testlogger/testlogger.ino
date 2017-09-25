@@ -1,3 +1,19 @@
+/**
+PURPOSE:        Collect data about water and air qualities and turn on
+                a pump and simple things like that. This is a proof of
+                concept..
+DEPENDENCY:     Arduino IDE with the following libs installed:
+                * OneWire.h
+                * DallasTemperature.h
+                * DHT.h
+PLATTFORM:      Should work on anything that runs the Arduino IDE
+AUTHOR(S):      michael lustenberger inofix.ch
+COPYRIGHT:      (C) 2017 by Michael Lustenberger and INOFIX GmbH
+
+                This program is free software under the GNU General Public
+                License (v3).
+**/
+
 
 //= includes =//
 
