@@ -199,34 +199,34 @@ void loop() {
     //=== serial user feedback ===//
 
     Serial.println("[");
-    Serial.print("  {\"id\":\"light_value\",\"value\":\"");
+    Serial.print("  {\"id\":\"light_value\",\"value\":");
     Serial.print(lightValue);
-    Serial.println("\"},");
+    Serial.println("},");
 
-    Serial.print("  {\"id\":\"box_temperature\",\"unit\":\"°C\",\"value\":\"");
+    Serial.print("  {\"id\":\"box_temperature\",\"unit\":\"°C\",\"value\":");
     Serial.print(exactTempValue);
-    Serial.println("\"},");
+    Serial.println("},");
 
     // DHT
-    Serial.print("  {\"id\":\"env_temperature\",\"unit\":\"°C\",\"value\":\"");
+    Serial.print("  {\"id\":\"env_temperature\",\"unit\":\"°C\",\"value\":");
     Serial.print(envTempValue);
-    Serial.println("\"},");
-    Serial.print("  {\"id\":\"env_humidity\",\"unit\":\"%\",\"value\":\"");
+    Serial.println("},");
+    Serial.print("  {\"id\":\"env_humidity\",\"unit\":\"%\",\"value\":");
     Serial.print(envHumidityValue);
-    Serial.println("\"},");
-    Serial.print("  {\"id\":\"env_heat_index\",\"value\":\"");
+    Serial.println("},");
+    Serial.print("  {\"id\":\"env_heat_index\",\"value\":");
     Serial.print(heatIndex);
-    Serial.println("\"},");
+    Serial.println("},");
 
-    Serial.print("  {\"id\":\"water_level\",\"threshold\":\"");
+    Serial.print("  {\"id\":\"water_level\",\"threshold\":");
     Serial.print(waterLevelThreshold);
-    Serial.print("\",\"value\":\"");
+    Serial.print(",\"value\":");
     Serial.print(waterLevelValue);
-    Serial.println("\"},");
+    Serial.println("},");
 
-    Serial.print("  {\"id\":\"water_distance\",\"unit\":\"m\",\"value\":\"");
+    Serial.print("  {\"id\":\"water_distance\",\"unit\":\"m\",\"value\":");
     Serial.print(waterDistanceValue);
-    Serial.println("\"}");
+    Serial.println("}");
     Serial.println("]");
 
     //=== set the actors ===//
