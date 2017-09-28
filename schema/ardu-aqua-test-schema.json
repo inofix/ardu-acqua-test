@@ -1,0 +1,32 @@
+{
+    "$schema": "https://raw.githubusercontent.com/inofix/ardu-report/master/json/meta-schema.json",
+    "$id": "https://raw.githubusercontent.com/inofix/ardu-aqua-test/master/json/ardu-aqua-test-schema.json",
+    "title": "Sensor Data Schema",
+    "description": "Definition of the JSON output sent over the serial line. You can count at least to always have an id and a value.",
+    "type": "array",
+    "minItems": 1,
+    "uniqueItems": true,
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string",
+                "use": "identifier"
+            },
+            "value": {
+                "type": "number",
+                "use": "value"
+            },
+            "unit": {
+                "type": "string",
+                "use": "unit"
+            },
+            "threshold": {
+                "type": "number",
+                "use": "threshold"
+            }
+        },
+        "minProperties": 2,
+        "required": ["id", "value"]
+    }
+}
