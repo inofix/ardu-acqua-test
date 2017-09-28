@@ -1,0 +1,3 @@
+
+[ {"id":"light_value","value":777}, {"id":"box_temperature","unit":"°C","value":22.19}, {"id":"env_temperature","unit":"°C","value":20.00}, {"id":"env_humidity","unit":"%","value":71.00}, {"id":"env_heat_index","value":19.91}, {"id":"water_level","threshold":600,"value":0}, {"id":"water_distance","unit":"m","value":0.92} ]
+
