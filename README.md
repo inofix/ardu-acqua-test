@@ -6,9 +6,11 @@ Proof of concept for water quality measurements at the flussbad-berlin project.
 
 An Arduino Mega 2650 controls a pump and some warn leds and sends the
 collected sensor data over the serial line in form of a JSON array
-which follows the schema definition. An example output can be found
-in the 'examples' folder, the schema is stored in the 'schema' folder
+(following a schema definition). An example output can be found
+in the 'examples' folder, the JSON Schema is stored in the 'schema' folder
 respectively.
+
+## And Now?
 
 The data can then be consumed / post-processed with:
 https://github.com/zwischenloesung/ardu-report
