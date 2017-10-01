@@ -10,6 +10,14 @@ collected sensor data over the serial line in form of a JSON array
 in the 'examples' folder, the JSON Schema is stored in the 'schema' folder
 respectively.
 
+## Dependencies
+
+Install the following libraries (e.g. via the arduino IDE):
+ * Adafruit\_Unified\_Sensor
+ * DallasTemperature
+ * DHT\_sensor\_library
+ * OneWire
+
 ## And Now?
 
 The data can then be consumed / post-processed with:
