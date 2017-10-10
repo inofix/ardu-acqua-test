@@ -180,22 +180,6 @@ void loop() {
     // in m
     float waterDistanceValue = waterDistanceDuration * soundVelocityAir / 1000000;
 
-    // take action: initialize warn LED and Pump..
-    int redValue = 0;
-    int greenValue = 0;
-    int blueValue = 0;
-
-    if (exactTempValue > warnTempThreshold) {
-        redValue = 255;
-    }
-
-    if (waterLevelValue > waterLevelThreshold) {
-        digitalWrite(pumpPin, HIGH);
-        blueValue = 255;
-    } else {
-        digitalWrite(pumpPin, LOW);
-    }
-
     //=== serial user feedback ===//
 
     Serial.println("[");
@@ -230,6 +214,21 @@ void loop() {
     Serial.println("]");
 
     //=== set the actors ===//
+
+    int redValue = 0;
+    int greenValue = 0;
+    int blueValue = 0;
+
+    if (exactTempValue > warnTempThreshold) {
+        redValue = 255;
+    }
+
+    if (waterLevelValue > waterLevelThreshold) {
+        digitalWrite(pumpPin, HIGH);
+        blueValue = 255;
+    } else {
+        digitalWrite(pumpPin, LOW);
+    }
 
     analogWrite(redWarnPin, redValue);
     analogWrite(greenWarnPin, greenValue);
